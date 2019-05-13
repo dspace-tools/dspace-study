@@ -41,8 +41,14 @@ $ cat /dspace/config/dspace.cfg | grep 'handle.prefix =' | awk '{ OFS=" "; print
 ```
 and will be printed a site prefix
 
-$ bash
 
 ```bash
 $ docker exec -it  $(docker ps -aqf "name=dspace6") /dspace/bin/dspace packager -u -d -a -t AIP -e test@test.edu -i <siteprefix>/0 /sitewide-aip-$(date +%Y-%m-%d-%H-%M-%S).zip
+```
+
+
+to restore
+
+```bash
+$ /dspace/bin/dspace packager -r -f -a -u -t AIP -e test@test.edu /backups/hp-lovecraft-repo/COMMUNITY\@123456789-1.zip 
 ```
