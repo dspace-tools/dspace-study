@@ -54,8 +54,8 @@ services:
       # __P__ -> .
       - dspace__P__dir=/dspace
       - db__P__url=jdbc:postgresql://dspacedb:5432/dspace
-      - dspace__P__hostname=localhost
-      - dspace__P__baseUrl=http://localhost:8080
+      - dspace__P__hostname=medoabsoluto.com.br
+      - dspace__P__baseUrl=http://medoabsoluto.com.br:8080
       - dspace__P__name=DSpace Started with Docker Compose
     labels:
       - traefik.backend=dspace
