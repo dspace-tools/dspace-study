@@ -1,0 +1,27 @@
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    # do not force https now
+    # [entryPoints.http.redirect]
+    # entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+# domain = "docker.localhost"
+domain = "medoabsoluto.com.br"
+exposedByDefault = false
+
+
+
+[acme]
+email = "luizamboni2002@hotmail.com"
+storage = "/acme.json"
+entryPoint = "https"
+onHostRule = true
+[acme.httpChallenge]
+entryPoint = "http"

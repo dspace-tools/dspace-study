@@ -1,6 +1,21 @@
 version: "3.7"
 
 services:
+
+  traefik:
+    image: traefik:1.7.8-alpine # The official Traefik docker image
+    ports:
+      - 80:80     # The HTTP port
+      - 8080:8080 # The Web UI (enabled by --api)
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock #
+      - ./traefik/traefik.toml:/traefik.toml
+      - ./traefik/acme.json:/acme.json
+    command: --api --docker --logLevel=DEBUG
+    networks:
+      - proxy
+    
   dspacedb:
     image: dspace/dspace-postgres-pgcrypto
     # Note that a separate image exists for DSpace 4x
@@ -22,13 +37,13 @@ services:
     environment:
       - SCRIPTVER=6
       - DSPACE_INSTALL=/dspace
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-test@test.edu}
-      - ADMIN_PASS=${ADMIN_PASS:-admin}
-      - ADMIN_FNAME=${ADMIN_FNAME:-AdminFirst}
-      - ADMIN_LNAME=${ADMIN_LNAME:-AdminLast}
+      - ADMIN_EMAIL=test@test.edu
+      - ADMIN_PASS=admin
+      - ADMIN_FNAME=AdminFirst
+      - ADMIN_LNAME=AdminLast
       - AIPZIP=${AIPZIP:-https://github.com/DSpace-Labs/AIP-Files/raw/master/dogAndReport.zip}
       # export SKIPAIP=Y
-      - SKIPAIP=${SKIPAIP:-N}
+      - SKIPAIP=N
       # Number of sec to wait before attempting AIP ingest
       - AIPWAIT=0
       # Number of sec to wait before attempting to start tomcat
@@ -42,8 +57,13 @@ services:
       - dspace__P__hostname=localhost
       - dspace__P__baseUrl=http://localhost:8080
       - dspace__P__name=DSpace Started with Docker Compose
-    ports:
-      - ${PORT:-8080}:8080
+    labels:
+      - traefik.backend=dspace
+      - "traefik.frontend.rule=Host:www.medoabsoluto.com.br,medoabsoluto.com.br"
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.port=8080
+
     volumes:
       - "assetstore:/dspace/assetstore"
 
@@ -58,12 +78,11 @@ services:
     entrypoint: /dspace-docker-tools/ingestAIP.sh
     networks:
       - dspacenet
+      - proxy
     depends_on:
       - dspacedb
     tty: true
     stdin_open: true
-
-
 
 
 volumes:
@@ -77,3 +96,6 @@ volumes:
 
 networks:
   dspacenet:
+    external: false
+  proxy:
+    external: true
