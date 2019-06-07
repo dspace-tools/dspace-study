@@ -52,3 +52,16 @@ to restore
 ```bash
 $ /dspace/bin/dspace packager -r -f -a -u -t AIP -e test@test.edu /backups/hp-lovecraft-repo/COMMUNITY\@123456789-1.zip 
 ```
+
+Fix metadata
+
+```bash
+# export metadata to a file
+/dspace/bin/dspace metadata-export -a -f /backups/metadata
+
+# replace in files
+cat /backups/metadata | sed 's/localhost:8080/medoabsoluto.com.br/g' > /backups/metadata-mod
+
+# import new file
+/dspace/bin/dspace metadata-import -f /backups/metadata-mod 
+```
