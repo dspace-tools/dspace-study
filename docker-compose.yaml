@@ -41,7 +41,7 @@ services:
       - ADMIN_PASS=admin
       - ADMIN_FNAME=AdminFirst
       - ADMIN_LNAME=AdminLast
-      - AIPZIP=${AIPZIP:-https://github.com/DSpace-Labs/AIP-Files/raw/master/dogAndReport.zip}
+      - AIPZIP=/backups/backups-2019-06-06.zip
       # export SKIPAIP=Y
       - SKIPAIP=N
       # Number of sec to wait before attempting AIP ingest
