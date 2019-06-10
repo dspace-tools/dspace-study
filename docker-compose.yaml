@@ -1,5 +1,6 @@
 version: "3.7"
 
+
 services:
 
   traefik:
@@ -32,50 +33,36 @@ services:
     stdin_open: true
 
   dspace6:
-    image: "dspace/dspace:dspace-6_x-jdk8-test"
+    build: "./dspace/"
     container_name: dspace6
     environment:
-      - SCRIPTVER=6
-      - DSPACE_INSTALL=/dspace
-      - ADMIN_EMAIL=test@test.edu
-      - ADMIN_PASS=admin
-      - ADMIN_FNAME=AdminFirst
-      - ADMIN_LNAME=AdminLast
-      - AIPZIP=/backups/backups-2019-06-06.zip
-      # export SKIPAIP=Y
-      - SKIPAIP=N
-      # Number of sec to wait before attempting AIP ingest
-      - AIPWAIT=0
-      # Number of sec to wait before attempting to start tomcat
-      - DBWAIT=0
       # Env vars with double underbars in names will be replaced with periods and written to local.cfg
       # The defaul values for local.cfg will be provided here
-      # __D__ -> -
-      # __P__ -> .
+      # __D__ -> - (dash)
+      # __P__ -> . (point)
       - dspace__P__dir=/dspace
       - db__P__url=jdbc:postgresql://dspacedb:5432/dspace
-      - dspace__P__hostname=medoabsoluto.com.br
-      - dspace__P__baseUrl=http://medoabsoluto.com.br
+      - dspace__P__hostname=${HOSTNAME:-localhost}
+      - dspace__P__baseUrl=http://${HOSTNAME:-localhost}
       - dspace__P__name=DSpace Started with Docker Compose
     labels:
       - traefik.backend=dspace
-      - "traefik.frontend.rule=Host:www.medoabsoluto.com.br,medoabsoluto.com.br"
+      - "traefik.frontend.rule=Host:www.${HOSTNAME:-localhost},${HOSTNAME:-localhost}"
       - traefik.enable=true
       - traefik.docker.network=proxy
       - traefik.port=8080
 
     volumes:
       - "assetstore:/dspace/assetstore"
+      - ./dspace/init-scripts:/dspace-docker-tools
+      - ./dspace/config/xmlui.xconf:/dspace/config/xmlui.xconf
+      - ./backups:/backups
 
-      - "./dspace/init-scripts:/dspace-docker-tools"
-      - "./dspace/config/xmlui.xconf:/dspace/config/xmlui.xconf"
-      - "./dspace/management:/dspace/management"
-      - "./backups:/backups"
-      - "solr_authority:/dspace/solr/authority/data"
-      - "solr_oai:/dspace/solr/oai/data"
-      - "solr_search:/dspace/solr/search/data"
-      - "solr_statistics:/dspace/solr/statistics/data"
-    entrypoint: /dspace-docker-tools/ingestAIP.sh
+      - solr_authority:/dspace/solr/authority/data
+      - solr_oai:/dspace/solr/oai/data
+      - solr_search:/dspace/solr/search/data
+      - solr_statistics:/dspace/solr/statistics/data
+    entrypoint: /dspace-docker-tools/init.sh
     networks:
       - dspacenet
       - proxy
