@@ -53,11 +53,12 @@ services:
       - traefik.port=8080
 
     volumes:
-      - "assetstore:/dspace/assetstore"
+      - assetstore:/dspace/assetstore
       - ./dspace/init-scripts:/dspace-docker-tools
-      - ./dspace/config/xmlui.xconf:/dspace/config/xmlui.xconf
-      - ./backups:/backups
+      - ./dspace/webapps/rest/WEB-INF/web.xml:/usr/local/tomcat/webapps/rest/WEB-INF/web.xml
+      # - ./dspace/tomcat/server.xml:/usr/local/tomcat/conf/server.xml
 
+      - ./backups:/backups
       - solr_authority:/dspace/solr/authority/data
       - solr_oai:/dspace/solr/oai/data
       - solr_search:/dspace/solr/search/data
