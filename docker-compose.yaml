@@ -45,6 +45,7 @@ services:
       - dspace__P__hostname=${HOSTNAME:-localhost}
       - dspace__P__baseUrl=http://${HOSTNAME:-localhost}
       - dspace__P__name=DSpace Started with Docker Compose
+      - jspui__P__google__P__analytics__P__key=UA-141785553-1
     labels:
       - traefik.backend=dspace
       - "traefik.frontend.rule=Host:www.${HOSTNAME:-localhost},${HOSTNAME:-localhost}"
