@@ -56,7 +56,7 @@ services:
       - assetstore:/dspace/assetstore
       - ./dspace/init-scripts:/dspace-docker-tools
       - ./dspace/webapps/rest/WEB-INF/web.xml:/usr/local/tomcat/webapps/rest/WEB-INF/web.xml
-      # - ./dspace/tomcat/server.xml:/usr/local/tomcat/conf/server.xml
+      - ./dspace/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml
 
       - ./backups:/backups
       - solr_authority:/dspace/solr/authority/data
